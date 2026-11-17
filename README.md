@@ -1,40 +1,10 @@
-# AHB Protocol — Learning Project
-
-Part of the AMBA Learning Series: APB → **AHB** → AXI
+# AHB Protocol 
 
 ---
 
 ## Overview
 
 This project implements a simple AHB (Advanced High-performance Bus) system from scratch in Verilog. It is designed as a learning exercise to understand the AHB protocol — pipelined transfers, wait states, multiple slave handling, and the decoder/mux architecture.
-
----
-
-## System Architecture
-
-```
-                    ┌─────────────┐
-                    │  AHB_MASTER │
-                    └──────┬──────┘
-                           │ HADDR, HTRANS, HWRITE, HWDATA, HBURST
-                    ┌──────▼──────┐
-                    │ AHB_DECODER │ → HSEL0, HSEL1, HSEL2
-                    └──────┬──────┘
-           ┌───────────────┼───────────────┐
-    ┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
-    │  AHB_SLAVE  │ │  AHB_SLAVE  │ │  AHB_SLAVE  │
-    │  (Slave 0)  │ │  (Slave 1)  │ │  (Slave 2)  │
-    │  0 wait st. │ │  1 wait st. │ │  2 wait st. │
-    └──────┬──────┘ └──────┬──────┘ └──────┬──────┘
-           └───────────────┼───────────────┘
-                    ┌──────▼──────┐
-                    │   AHB_MUX   │ → HRDATA, HREADY, HRESP
-                    └──────┬──────┘
-                           │
-                    ┌──────▼──────┐
-                    │  AHB_MASTER │ (response back)
-                    └─────────────┘
-```
 
 ---
 
@@ -117,29 +87,3 @@ This project implements a simple AHB (Advanced High-performance Bus) system from
 
 ---
 
-## Coding Style
-
-- All signal names in `ALL_CAPS`
-- Active-low asynchronous reset (`HRESETn`)
-- `begin-end` blocks on all always statements
-- No generate blocks, no packed arrays
-- Parameters used only where necessary (`WAIT_STATES` in slave)
-- Testbench inputs use `$random` — no hardcoded data values
-- No self-checking in testbenches — waveform analysis in Vivado
-
----
-
-## Simulation (Vivado)
-
-1. Create a new RTL project in Vivado
-2. Add all `.v` files as design sources
-3. Add the relevant `.sv` file as simulation source
-4. Set the corresponding `TB_*` module as top for simulation
-5. Run behavioral simulation and add signals to waveform window
-
-**Recommended waveform signals for `tb_ahb_top`:**
-- `HADDR`, `HTRANS`, `HWRITE`, `HBURST`, `HWDATA`
-- `HRDATA`, `HREADY`, `HRESP`
-- `HSEL0`, `HSEL1`, `HSEL2`
-- `DONE`, `RDATA_CAP`, `HRESP_CAP`
-- `DUT/U_SLAVE0/REG_FILE`, `DUT/U_SLAVE1/REG_FILE`, `DUT/U_SLAVE2/REG_FILE`
